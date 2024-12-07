@@ -3,8 +3,8 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 
-batch_size = 64 
-block_size = 256 
+batch_size = 512
+block_size = 1024
 max_iters = 5000
 eval_interval = 500
 learning_rate = 3e-4
