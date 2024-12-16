@@ -5,7 +5,7 @@ from model import GPTLanguageModel
 
 # Constants
 RANDOM_SEED = 1337
-TRAIN_ITERATIONS = 1000
+TRAIN_ITERATIONS = 1200
 WORD_COUNT = 200
 DATA_FILE = "input.txt"
 OUTPUT_FILE = "generated_output.txt"
