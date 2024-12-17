@@ -63,7 +63,7 @@ class Block(nn.Module):
         return x
 
 class GPTLanguageModel(nn.Module):
-    def __init__(self, vocab_size, n_embd=128, n_head=6, n_layer=6, block_size=128, dropout=0.2):
+    def __init__(self, vocab_size, n_embd=256, n_head=8, n_layer=8, block_size=512, dropout=0.5, batch_size=32):
         super().__init__()
         self.token_embedding_table = nn.Embedding(vocab_size, n_embd)
         self.position_embedding_table = nn.Embedding(block_size, n_embd)
@@ -71,6 +71,8 @@ class GPTLanguageModel(nn.Module):
         self.ln_f = nn.LayerNorm(n_embd)
         self.lm_head = nn.Linear(n_embd, vocab_size)
         self.block_size = block_size
+        self.batch_size = batch_size  # Added batch size
+    
 
     def forward(self, idx, targets=None):
         B, T = idx.shape
