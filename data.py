@@ -1,21 +1,29 @@
 import torch
 
-class TextData:
+class Data:
     def __init__(self, file_path):
-        with open(file_path, 'r', encoding='utf-8') as file:
-            self.text_content = file.read()
-        self.unique_chars = sorted(list(set(self.text_content)))
-        self.vocab_size = len(self.unique_chars)
-        self.char_to_index = {char: idx for idx, char in enumerate(self.unique_chars)}
-        self.index_to_char = {idx: char for idx, char in enumerate(self.unique_chars)}
-        self.tensor_data = torch.tensor(self._encode_text(self.text_content), dtype=torch.long)
+        with open(file_path, 'r', encoding='utf-8') as f:
+            self.text = f.read()
+        self.text = self.text.replace('\n', ' ').replace('\r', '').strip()
+        self.chars = sorted(list(set(self.text)))
+        self.stoi = {ch: i for i, ch in enumerate(self.chars)}
+        self.itos = {i: ch for i, ch in enumerate(self.chars)}
+        self.vocab_size = len(self.chars)
 
-    def _encode_text(self, text):
-        return [self.char_to_index[char] for char in text]
+        # Split the text data into train and validation sets
+        self.data = torch.tensor(self.encode(self.text), dtype=torch.long)
+        self.n_train = int(0.9 * len(self.data))  # 90% for training
+        self.train_data = self.data[:self.n_train]
+        self.val_data = self.data[self.n_train:]
 
-    def decode_text(self, indices):
-        return ''.join([self.index_to_char[idx] for idx in indices])
+    def encode(self, s):
+        return [self.stoi[c] for c in s]
 
-    def get_train_test_split(self, ratio=0.9):
-        split_point = int(ratio * len(self.tensor_data))
-        return self.tensor_data[:split_point], self.tensor_data[split_point:]
+    def decode(self, l):
+        return ''.join([self.itos[i] for i in l])
+
+    def get_train_data(self):
+        return self.train_data
+
+    def get_val_data(self):
+        return self.val_data
